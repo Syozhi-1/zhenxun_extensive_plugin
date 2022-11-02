@@ -8,6 +8,7 @@ from ..utils.json_utils import load_json, save_json
 
 GENSHIN_CARD_PATH = os.path.join(os.path.dirname(__file__), "..")
 player_info_path = GENSHIN_CARD_PATH + '/player_info'
+group_info_path = GENSHIN_CARD_PATH + '/group_info'
 res_path = GENSHIN_CARD_PATH + '/res/'
 json_path = res_path + 'json_data'
 bg_path = res_path + 'background'
@@ -32,7 +33,7 @@ alias_file = load_json(path=f'{json_path}/alias.json')
 
 class PlayerInfo:
 
-    def __init__(self, uid: str):
+    def __init__(self, uid: int):
         self.path = f'{player_info_path}/{uid}.json'
         self.data = load_json(path=self.path)
         self.player_info = self.data['玩家信息'] if '玩家信息' in self.data else {}
@@ -44,7 +45,7 @@ class PlayerInfo:
         self.player_info['世界等级'] = data.get('worldLevel', 'unknown')
         self.player_info['签名'] = data.get('signature', 'unknown')
         self.player_info['成就'] = data.get('finishAchievementNum', 'unknown')
-        self.player_info['角色列表'] = dictList_to_list(
+        self.player_info['角色列表'] = dictlist_to_list(
             data.get('showAvatarInfoList'))
         self.player_info['名片列表'] = data.get('showNameCardIdList', 'unknown')
         self.player_info['头像'] = data['profilePicture']['avatarId']
@@ -180,7 +181,7 @@ class PlayerInfo:
                         artifact['flat']['reliquaryMainstat']['statValue']
                 }
                 artifact_info['词条'] = []
-                for reliquary in artifact['flat']['reliquarySubstats']:
+                for reliquary in artifact['flat'].get('reliquarySubstats', []):
                     artifact_info['词条'].append({
                         '属性名':
                             prop_list[reliquary['appendPropId']],
@@ -227,7 +228,7 @@ def get_name_by_id(role_id: str):
         return None
 
 
-def dictList_to_list(data):
+def dictlist_to_list(data):
     if not isinstance(data, list):
         return 'unknown'
     new_data = {}

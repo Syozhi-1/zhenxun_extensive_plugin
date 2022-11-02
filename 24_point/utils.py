@@ -1,10 +1,12 @@
-import random
 import itertools
+import random
 from io import BytesIO
-from PIL.Image import Image as IMG
-from configs.path_config import FONT_PATH
+
 from PIL import ImageFont
+from PIL.Image import Image as IMG
 from PIL.ImageFont import FreeTypeFont
+
+from configs.path_config import FONT_PATH
 from utils.http_utils import AsyncHttpx
 
 
@@ -62,16 +64,19 @@ def random_question():
 def check_result(submit: str, question) -> bool:
     try:
         if eval(submit) == 24:
-            num = submit.replace("+", "").replace("-", "").replace(
-                "*", "").replace("/", "").replace("(", "").replace(")", "")
-            if question[0] in num:
-                num = num.replace(question[0], "", 1)
-                if question[1] in num:
-                    num = num.replace(question[1], "", 1)
-                    if question[2] in num:
-                        num = num.replace(question[2], "", 1)
-                        if question[3] in num:
-                            num = num.replace(question[3], "", 1)
+            num = submit.replace("+", ",").replace("-", ",").replace(
+                "*", ",").replace("/", ",").replace("(", ",").replace(")", ",")
+            num = num.split(",")
+            if str(question[0]) in num:
+                num.remove(str(question[0]))
+                if str(question[1]) in num:
+                    num.remove(str(question[1]))
+                    if str(question[2]) in num:
+                        num.remove(str(question[2]))
+                        if str(question[3]) in num:
+                            num.remove(str(question[3]))
+                            while '' in num:
+                                num.remove('')
                             if not num:
                                 return True
         return False

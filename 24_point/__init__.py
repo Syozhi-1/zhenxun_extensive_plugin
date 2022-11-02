@@ -1,12 +1,10 @@
 from nonebot import on_command
 from nonebot.adapters.onebot.v11 import GROUP, Bot, GroupMessageEvent, Message, MessageSegment
-from nonebot.params import CommandArg, Command, ArgStr
-from utils.message_builder import at, image
+from nonebot.params import CommandArg
+
+from models.bag_user import BagUser
 from .data_source import Draw_Handle
 from .utils import random_question, check_result
-from models.bag_user import BagUser
-import asyncio
-from io import BytesIO
 
 __zx_plugin_name__ = "24点"
 __plugin_usage__ = """
@@ -23,7 +21,7 @@ __plugin_cmd__ = [
     "解答",
     "结束24点",
 ]
-__plugin_type__ = ("群内小游戏", )
+__plugin_type__ = ("群内小游戏",)
 __plugin_version__ = 0.1
 __plugin_author__ = "CRAZYSHIMAKAZE"
 __plugin_settings__ = {
@@ -49,7 +47,7 @@ async def _(bot: Bot, event: GroupMessageEvent, arg: Message = CommandArg()):
     if msg:
         return
     if event.group_id in answer:
-        if answer[event.group_id] != []:
+        if answer[event.group_id]:
             await bot.send(event, "上一局游戏还未结束!")
     else:
         question[event.group_id], answer[event.group_id] = random_question()
@@ -64,9 +62,10 @@ async def _(bot: Bot, event: GroupMessageEvent, arg: Message = CommandArg()):
 async def _(bot: Bot, event: GroupMessageEvent, arg: Message = CommandArg()):
     global answer
     if event.group_id in answer:
-        if answer[event.group_id] != []:
+        if answer[event.group_id]:
             msg = arg.extract_plain_text().strip()
-            msg = msg.replace('（','(').replace('）',')').replace('x','*').replace('×','*')
+            msg = msg.replace('（', '(').replace('）', ')').replace('×', '*').replace('x', '*').replace('×', '*').replace(
+                '÷', '/')
             mark = check_result(msg, question[event.group_id])
             bounce = 10
             if not mark:
@@ -89,7 +88,7 @@ async def _(bot: Bot, event: GroupMessageEvent, arg: Message = CommandArg()):
 async def _(bot: Bot, event: GroupMessageEvent):
     global answer
     if event.group_id in answer:
-        if answer[event.group_id] != []:
+        if answer[event.group_id]:
             answer_list = ''.join(answer[event.group_id])
             await submit.send(f"参考答案:\n{answer_list}\n本轮游戏已结束!")
             del answer[event.group_id]

@@ -1,9 +1,8 @@
-import random
-from enum import Enum
 from io import BytesIO
+
 from PIL import Image, ImageDraw
 from PIL.Image import Image as IMG
-from typing import Iterable, Tuple, List, Optional
+
 from .utils import save_jpg, load_font
 
 
@@ -11,7 +10,7 @@ class Draw_Handle:
     def __init__(self):
         self.question = []
         self.length = 4
-        self.block_size = (160, 160)  # 文字块尺寸
+        self.block_size = (100, 100)  # 文字块尺寸
         self.block_padding = (20, 20)  # 文字块之间间距
         self.padding = (40, 40)  # 边界间距
         self.border_width = 4  # 边框宽度
